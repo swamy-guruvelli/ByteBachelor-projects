@@ -1,0 +1,32 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://tasklab:tasklab@db:5432/tasklab
+      DB_POOL_SIZE: 5
+      DB_MAX_OVERFLOW: 10
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: tasklab
+      POSTGRES_USER: tasklab
+      POSTGRES_PASSWORD: tasklab
+    ports:
+      - "5432:5432"
+    volumes:
+      - tasklab-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tasklab -d tasklab"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+
+volumes:
+  tasklab-data:
+
