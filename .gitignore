@@ -7,3 +7,5 @@ __pycache__/
 target/
 logs/
 data/
+*Dockerfile.test
+*docker-compose.test.yml
